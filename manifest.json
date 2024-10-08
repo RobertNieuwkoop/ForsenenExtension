@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "ROCAfasForensen",
+  "version": "1.5",
+  "description": "Automates forensen declarations because AFAS for ROC sucks .",
+  "icons": {
+    "48": "border-48.png"
+  },
+
+  "permissions": ["activeTab"],
+    
+
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.afasinsite.nl/aanmaken-verzameldeclaratie-ess-incl-autorisatie-prs/forensenvergoeding-en-thuiswerkvergoeding"
+      ],
+      "js": [
+        "forensen.js"
+      ]
+    }
+  ],
+  "browser_specific_settings":{
+    "gecko": { 
+      "id" : "AFAS@shit"
+    }
+  }
+}
