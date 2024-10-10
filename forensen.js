@@ -107,7 +107,7 @@ async function enterEntry(date) {
     return new Promise(async function (resolve) {
         await isElementLoaded('button[data-webbutton-id="new"]').then((newButton) => {
             newButton.click();
-            return watchDomForAdditions('div.floatingWindow');
+            return  ('div.floatingWindow');
         }).then((floatingWindow) => {
             return isElementLoaded('input[data-title="Datum boeking"]');
         }).then((dateInput) => {
@@ -160,7 +160,7 @@ isElementLoaded('div.property').then((fieldControl) => {
 
         var label = document.createElement('label');
         label.setAttribute('for', 'startDate');
-        label.innerText = "Start datum:";
+        label.innerText = "Startdatum:";
         bulkinsertDiv.appendChild(label);
 
         var datePicker = document.createElement('input');
@@ -173,7 +173,7 @@ isElementLoaded('div.property').then((fieldControl) => {
 
         label = document.createElement('label');
         label.setAttribute('for', 'endDate');
-        label.innerText = "Eind datum:";
+        label.innerText = "Einddatum:";
         bulkinsertDiv.appendChild(label);
 
         currentDate = new Date();
@@ -191,7 +191,7 @@ isElementLoaded('div.property').then((fieldControl) => {
         workDayDiv.setAttribute('id', 'workdays');
         const dayNames = ["Ma", "Di", "Wo", "Do", "Vr"];
         label = document.createElement('label');
-        label.innerText = "Welk dagen werkt u:"
+        label.innerText = "Op welke dagen werkt u:"
         workDayDiv.appendChild(label);
 
         for (var i = 0; i < 5; i++) {
