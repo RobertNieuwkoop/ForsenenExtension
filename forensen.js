@@ -35,7 +35,6 @@ async function submitEntries() {
     });
     const dates = getDates(startDate, endDate, daysToInclude);
 
-    console.log(dates);
     try {
         for (var i = 0; i < dates.length; i++) {
             await enterEntry(dates[i]);
@@ -108,7 +107,7 @@ async function enterEntry(date) {
         await isElementLoaded('button[data-webbutton-id="new"]').then((newButton) => {
             newButton.click();
             return  ('div.floatingWindow');
-        }).then((floatingWindow) => {
+        }).then(() => {
             return isElementLoaded('input[data-title="Datum boeking"]');
         }).then((dateInput) => {
             dateInput.focus();
@@ -143,7 +142,7 @@ async function enterEntry(date) {
             return watchDomForDeletions('div.floatingWindow');
         }).then(() => {
             return watchDomForAdditions('button[data-webbutton-id="new"]');
-        }).then((button) => {
+        }).then(() => {
             resolve();
         });
     });
