@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ROCAfasForensen",
-  "version": "1.6",
+  "version": "1.7",
   "description": "Automates forensen declarations because AFAS for ROC sucks .",
   "icons": {
     "48": "border-48.png"
