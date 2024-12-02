@@ -141,7 +141,7 @@ async function enterEntry(date) {
             finishButton.click();
             return watchDomForDeletions('div.floatingWindow');
         }).then(() => {
-            return watchDomForAdditions('button[data-webbutton-id="new"]');
+            return watchDomForAdditions('afas-button[data-webbutton-id="new"]');
         }).then(() => {
             resolve();
         });
