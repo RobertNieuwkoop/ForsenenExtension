@@ -104,7 +104,7 @@ async function isElementLoaded(element, parent = document) {
 
 async function enterEntry(date) {
     return new Promise(async function (resolve) {
-        await isElementLoaded('button[data-webbutton-id="new"]').then((newButton) => {
+        await isElementLoaded('afas-button[data-webbutton-id="new"]').then((newButton) => {
             newButton.click();
             return  ('div.floatingWindow');
         }).then(() => {
@@ -136,7 +136,7 @@ async function enterEntry(date) {
                     dateValidationDateSelector.dispatchEvent(event);
                 }
             });
-            return isElementLoaded('button[data-webbutton-id="AntaUpdateCloseWebForm"]');
+            return isElementLoaded('afas-button[data-webbutton-id="AntaUpdateCloseWebForm"]');
         }).then(async (finishButton) => {
             finishButton.click();
             return watchDomForDeletions('div.floatingWindow');
