@@ -7,7 +7,7 @@ function getDates(startDate, endDate, daysToInclude) {
     while (current <= end) {
         if (daysToInclude.includes(current.getDay())) {
             current.setHours(12); // This is a bit dirty, but it circumvents the Summer time issue.
-            dates.push(new Date(current).toISOString().replace(/T.*/, '').split('-').reverse().join('-'););
+            dates.push(new Date(current).toISOString().replace(/T.*/, '').split('-').reverse().join('-'));
         }
         current.setDate(current.getDate() + 1);
     }
