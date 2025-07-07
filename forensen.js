@@ -109,34 +109,48 @@ async function enterEntry(date) {
             newButton.click();
             return  ('div.floatingWindow');
         }).then(() => {
-            return isElementLoaded('input[data-title="Datum boeking"]');
+            return isElementLoaded('afas-date-input');
         }).then((dateInput) => {
-            dateInput.focus();
-            dateInput.value = date;
-            dateInput.dispatchEvent(new Event('input'));
-            dateInput.blur();
-            return isElementLoaded('div.typeahead__arrow');
-        }).then((dateValidationArrow) => {
-            dateValidationArrow.click();
-            return isElementLoaded('div.content-menu__item input.input');
-        }).then((dateValidationDateSelector) => {
-            dateValidationDateSelector.focus();
-            dateValidationDateSelector.value = convertDate(date);
-            dateValidationDateSelector.dispatchEvent(new Event('input'));
-            return dateValidationDateSelector;
-        }).then(async (dateValidationDateSelector) => {
-            await watchDomForAdditions('span.typeahead-item__code');
-            await isElementLoaded('div.has-focus span.typeahead-item__code').then((span) => {
-                if (span.innerText.split('(')[1].split(')')[0] === convertDate(date)) {
-                    const event = new KeyboardEvent('keydown', {
+            if (dateInput && dateInput.shadowRoot) {
+                const input = dateInput.shadowRoot.querySelector('input[aria-label="Datum boeking"]');
+                input.dispatchEvent(new KeyboardEvent('keydown', { key: date, bubbles: true }));
+                input.value = date;
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+                input.dispatchEvent(new KeyboardEvent('keyup', { key: date, bubbles: true }));
+                const event = new KeyboardEvent('keydown', {
                         key: 'Enter',
                         code: 'Enter',
                         which: 13,
                         keyCode: 13,
                     });
-                    dateValidationDateSelector.dispatchEvent(event);
-                }
-            });
+                input.dispatchEvent(event);
+                input.dispatchEvent(new KeyboardEvent('keyup', { key: date, bubbles: true }));
+            }
+            return isElementLoaded('afas-reference');
+        }).then((dateValidationArrow) => {
+            const input = dateValidationArrow.shadowRoot.querySelector('div.toggle');
+            input.click();
+            return dateValidationArrow.shadowRoot.querySelector('afas-text-input');
+        }).then((dateValidationDateSelector) => {
+            const child = dateValidationDateSelector.shadowRoot.querySelector('input');
+            dateValidationDateSelector.focus();
+            child.value = convertDate(date);
+            child.dispatchEvent(new Event('input'));
+            return child;
+        }).then(async (dateValidationDateSelector) => {
+            console.log(dateValidationDateSelector);
+            const char = convertDate(date);
+            dateValidationDateSelector.dispatchEvent(new KeyboardEvent('keydown', { key: char, bubbles: true }));
+            dateValidationDateSelector.value = char;
+            dateValidationDateSelector.dispatchEvent(new Event('input', { bubbles: true }));
+            dateValidationDateSelector.dispatchEvent(new KeyboardEvent('keyup', { key: char, bubbles: true }));
+            const event = new KeyboardEvent('keydown', {
+                        key: 'Enter',
+                        code: 'Enter',
+                        which: 13,
+                        keyCode: 13,
+                    });
+            dateValidationDateSelector.dispatchEvent(event);
             return isElementLoaded('afas-button[data-webbutton-id="AntaUpdateCloseWebForm"]');
         }).then(async (finishButton) => {
             finishButton.click();
