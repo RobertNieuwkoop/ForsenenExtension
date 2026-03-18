@@ -1,17 +1,16 @@
 
 function getDates(startDate, endDate, daysToInclude) {
-    const end = new Date(endDate);
-    const current = new Date(startDate);
-    const dates = new Array();
+    var start = new Date(endDate);
+    start.setHours(12); // This is a bit dirty, but it circumvents the Summer time issue.
+    var dates = [];
 
-    while (current <= end) {
-        if (daysToInclude.includes(current.getDay())) {
-            current.setHours(12); // This is a bit dirty, but it circumvents the Summer time issue.
-            dates.push(new Date(current).toISOString().replace(/T.*/, '').split('-').reverse().join('-'));
+    for (var d = new Date(startDate); d <= start; d.setDate(d.getDate() + 1)) {
+        d.setHours(12); // This is a bit dirty, but it circumvents the Summer time issue.
+
+        if (daysToInclude.includes(d.getDay())) {
+            dates.push(new Date(d).toISOString().replace(/T.*/, '').split('-').reverse().join('-'));
         }
-        current.setDate(current.getDate() + 1);
     }
-
     return dates;
 }
 
@@ -138,7 +137,6 @@ async function enterEntry(date) {
             child.dispatchEvent(new Event('input'));
             return child;
         }).then(async (dateValidationDateSelector) => {
-            console.log(dateValidationDateSelector);
             const char = convertDate(date);
             dateValidationDateSelector.dispatchEvent(new KeyboardEvent('keydown', { key: char, bubbles: true }));
             dateValidationDateSelector.value = char;
