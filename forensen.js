@@ -25,7 +25,6 @@ function convertDate(date) {
 async function submitEntries() {
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
-
     const workDays = document.querySelectorAll('.workday');
     var daysToInclude = [];
     workDays.forEach(workDay => {
@@ -49,7 +48,7 @@ async function submitEntries() {
  * @param {*} ms 
  * @returns 
  */
-const waitFor = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));
+const waitFor = (ms = 500) => new Promise(res => setTimeout(res, ms));
 
 /**
  * Attaches an MutationObserver to the body and fires the callback function when the element is removed
@@ -102,34 +101,37 @@ async function isElementLoaded(element, parent = document) {
     return parent.querySelector(element);
 }
 
+async function sendKeyboardEventToElement(element, data)
+{
+    element.dispatchEvent(new KeyboardEvent('keydown', { key: data }));
+    element.value = data;
+    element.dispatchEvent(new Event('input', { }));
+    element.dispatchEvent(new KeyboardEvent('keyup', { key: data, }));
+    const event = new KeyboardEvent('keydown', {
+                key: 'Enter',
+                code: 'Enter',
+                keyCode: 13,
+            });
+    element.dispatchEvent(event);
+    await(100);
+}
+
 async function enterEntry(date) {
     return new Promise(async function (resolve) {
-        await isElementLoaded('afas-button[data-webbutton-id="new"]').then((newButton) => {
+        await isElementLoaded('afas-button[label="Nieuw"]')
+        .then(async (newButton) => {
             newButton.click();
-            return  ('div.floatingWindow');
-        }).then(() => {
             return isElementLoaded('afas-date-input');
-        }).then((dateInput) => {
+        }).then(async (dateInput) => {
             if (dateInput && dateInput.shadowRoot) {
                 const input = dateInput.shadowRoot.querySelector('input[aria-label="Datum boeking"]');
-                input.dispatchEvent(new KeyboardEvent('keydown', { key: date, bubbles: true }));
-                input.value = date;
-                input.dispatchEvent(new Event('input', { bubbles: true }));
-                input.dispatchEvent(new KeyboardEvent('keyup', { key: date, bubbles: true }));
-                const event = new KeyboardEvent('keydown', {
-                        key: 'Enter',
-                        code: 'Enter',
-                        which: 13,
-                        keyCode: 13,
-                    });
-                input.dispatchEvent(event);
-                input.dispatchEvent(new KeyboardEvent('keyup', { key: date, bubbles: true }));
+                await sendKeyboardEventToElement(input, date);
             }
             return isElementLoaded('afas-reference');
         }).then((dateValidationArrow) => {
             const input = dateValidationArrow.shadowRoot.querySelector('div.toggle');
             input.click();
-            return dateValidationArrow.shadowRoot.querySelector('afas-text-input');
+           return dateValidationArrow.shadowRoot.querySelector('afas-text-input');
         }).then((dateValidationDateSelector) => {
             const child = dateValidationDateSelector.shadowRoot.querySelector('input');
             dateValidationDateSelector.focus();
@@ -138,24 +140,19 @@ async function enterEntry(date) {
             return child;
         }).then(async (dateValidationDateSelector) => {
             const char = convertDate(date);
-            dateValidationDateSelector.dispatchEvent(new KeyboardEvent('keydown', { key: char, bubbles: true }));
-            dateValidationDateSelector.value = char;
-            dateValidationDateSelector.dispatchEvent(new Event('input', { bubbles: true }));
-            dateValidationDateSelector.dispatchEvent(new KeyboardEvent('keyup', { key: char, bubbles: true }));
-            const event = new KeyboardEvent('keydown', {
-                        key: 'Enter',
-                        code: 'Enter',
-                        which: 13,
-                        keyCode: 13,
-                    });
-            dateValidationDateSelector.dispatchEvent(event);
-            return isElementLoaded('afas-button[data-webbutton-id="AntaUpdateCloseWebForm"]');
+            await sendKeyboardEventToElement(dateValidationDateSelector, char);
+            return isElementLoaded('div.floatingWindow afas-button[data-webbutton-id="AntaUpdateCloseWebForm"]');
         }).then(async (finishButton) => {
-            finishButton.click();
-            return watchDomForDeletions('div.floatingWindow');
-        }).then(() => {
-            return watchDomForAdditions('afas-button[data-webbutton-id="new"]');
-        }).then(() => {
+            if(finishButton && finishButton.shadowRoot)
+            {
+                var button = finishButton;
+                button = button.shadowRoot.querySelector("div button");
+                await waitFor(200);
+                button.click();
+            }
+           
+            return watchDomForAdditions('afas-button[label="Nieuw"]');
+        }).then(async () => {
             resolve();
         });
     });
@@ -164,7 +161,7 @@ async function enterEntry(date) {
 isElementLoaded('div.property').then((fieldControl) => {
     if (!fieldControl.contains(document.getElementById('bulkInsert'))) {
         var currentDate = new Date();
-        currentDate.setDate(currentDate.getDate() - 1);
+        currentDate.setDate(currentDate.getDate());
         currentDate = currentDate.toJSON().slice(0, 10);
 
         const bulkinsertDiv = document.createElement('div');
