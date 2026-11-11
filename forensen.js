@@ -31,8 +31,7 @@ async function submitEntries() {
         return;
     }
 
-    if(endDate > new Date())
-    {
+    if (endDate > new Date()) {
         alert("De einddatum mag niet in de toekomst liggen");
         return;
     }
@@ -157,13 +156,13 @@ async function enterEntry(date, str) {
             }).then(async (dateValidationDateSelector) => {
                 const char = convertDate(date);
                 await sendKeyboardEventToElement(dateValidationDateSelector, char);
-               
+
                 return isElementLoaded('div.floatingWindow afas-textarea-input[label="Toelichting"]');
             }).then(async (additionalInformation) => {
-                
+
                 additionalInformation.setAttribute('value', str);
                 additionalInformation.dispatchEvent(new Event('input'));
-                
+
                 const child = additionalInformation.shadowRoot.querySelector('textarea');
                 child.dispatchEvent(new Event('change'));
 
@@ -225,7 +224,7 @@ isElementLoaded('.contentmasterpart .page .zonelayout .zonetable:nth-child(2)').
             .appendChild(legend);
         // Prepare all the stuff that needs to go into the first fieldset
         var currentDate = new Date()
-        currentDate.setHours(12, 0, 0, 0);
+        currentDate.setHours(1, 0, 0, 0);
         currentDate = currentDate.toJSON();
 
         let fieldRow = document.createElement('afas-field-row');
